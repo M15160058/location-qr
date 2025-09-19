@@ -39,6 +39,9 @@
           `Your coordinates: ${userLat.toFixed(6)}, ${userLng.toFixed(6)}`;
 
         const dist = getDistance(userLat, userLng, targetLat, targetLng);
+          // Show current distance
+document.getElementById("distance").innerText = 
+  `Distance from target: ${Math.round(dist)} meters`;
 
         if (dist <= allowedRadius) {
           document.getElementById("status").innerHTML = `<span class="ok">✅ Location verified. Redirecting...</span>`;
@@ -57,6 +60,7 @@
 <body>
     <h2>Checking your location...</h2>
     <p id="status">Verifying device type...</p>
+    <p id="distance" class="coords"></p> <!-- Show distance here -->
     <p id="coords" class="coords"></p>
 </body>
 </html>
