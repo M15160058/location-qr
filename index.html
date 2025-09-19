@@ -9,23 +9,7 @@
     .fail { color: red; font-size: 20px; }
     .coords { color: blue; font-size: 16px; margin-top: 20px; }
   </style>
-    <script>
-  navigator.geolocation.getCurrentPosition(
-    function(position) {
-      alert(`Your coordinates: ${position.coords.latitude}, ${position.coords.longitude}`);
-    },
-    function(error) {
-      alert(`Error getting location: ${error.message}`);
-    }
-  );
-  </script>
-</head>
-<body>
-  <h2>Checking your location...</h2>
-  <p id="status">Please allow location access.</p>
-  <p id="coords" class="coords"></p>
-
-  <script>
+     <script>
     // Simple test to see if geolocation works
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
@@ -46,7 +30,7 @@
     const allowedRadius = 100; // meters
 
     // 🌐 Your Outlook Form link
-    const formURL = "https://forms.office.com/Pages/ResponsePage.aspx?id=YOUR_FORM_URL_HERE";
+    const formURL = "https://forms.office.com/Pages/ResponseDetailPage.aspx?id=bC4i9cZf60iPA3PbGCA7Y3zURXDN2c1Mk8io1jX0SGNUQjNURzRWRjNHQTlHOVlTMjZTSTBXVlZYMy4u&rid=1&GetResponseToken=MEHauwlpPSlbD8Zivgzk26RDEUhsHk15fpGrl17RNno&origin=rc";
 
     // Convert degrees to radians
     function toRad(value) {
@@ -93,5 +77,12 @@
       document.getElementById("status").innerHTML = "❌ Geolocation not supported by your browser.";
     }
   </script>
+</head>
+<body>
+  <h2>Checking your location...</h2>
+  <p id="status">Please allow location access.</p>
+  <p id="coords" class="coords"></p>
+
+ 
 </body>
 </html>
