@@ -12,8 +12,18 @@
 <body>
   <h2>Checking your location...</h2>
   <p id="status">Please allow location access.</p>
+  
 
   <script>
+    navigator.geolocation.getCurrentPosition(
+  function(position) {
+    alert(`Your coordinates: ${position.coords.latitude}, ${position.coords.longitude}`);
+  },
+  function(error) {
+    alert(`Error getting location: ${error.message}`);
+  }
+);
+
     // 🎯 Allowed location (example: Times Square, NYC)
     const targetLat = 39.132645;
     const targetLng = −84.51735;
