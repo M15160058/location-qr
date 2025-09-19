@@ -7,35 +7,30 @@
     body { font-family: Arial, sans-serif; text-align: center; margin: 50px; }
     .ok { color: green; font-size: 20px; }
     .fail { color: red; font-size: 20px; }
+    .coords { color: blue; font-size: 16px; margin-top: 20px; }
   </style>
 </head>
 <body>
   <h2>Checking your location...</h2>
   <p id="status">Please allow location access.</p>
-  
+  <p id="coords" class="coords"></p>
 
   <script>
-    navigator.geolocation.getCurrentPosition(
-  function(position) {
-    alert(`Your coordinates: ${position.coords.latitude}, ${position.coords.longitude}`);
-  },
-  function(error) {
-    alert(`Error getting location: ${error.message}`);
-  }
-);
-
-    // 🎯 Allowed location (example: Times Square, NYC)
-    const targetLat = 39.132645;
-    const targetLng = −84.51735;
+    // 🎯 Set your allowed location here
+    // Example: Swift Hall, University of Cincinnati
+    const targetLat = 39.132473;
+    const targetLng = -84.5170492;
     const allowedRadius = 100; // meters
 
     // 🌐 Your Outlook Form link
     const formURL = "https://forms.office.com/Pages/ResponsePage.aspx?id=YOUR_FORM_URL_HERE";
 
+    // Convert degrees to radians
     function toRad(value) {
       return value * Math.PI / 180;
     }
 
+    // Haversine formula to calculate distance in meters
     function getDistance(lat1, lon1, lat2, lon2) {
       const R = 6371000; // meters
       const dLat = toRad(lat2 - lat1);
@@ -47,25 +42,32 @@
       return R * c;
     }
 
+    // Check if geolocation is supported
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position) {
         const userLat = position.coords.latitude;
         const userLng = position.coords.longitude;
+
+        // Show coordinates for debugging
+        document.getElementById("coords").innerText = 
+          `Your coordinates: ${userLat.toFixed(6)}, ${userLng.toFixed(6)}`;
+
         const dist = getDistance(userLat, userLng, targetLat, targetLng);
 
         if (dist <= allowedRadius) {
           document.getElementById("status").innerHTML = 
             `<span class="ok">✅ Location verified. Redirecting...</span>`;
+          // Redirect after 2 seconds
           setTimeout(() => { window.location.href = formURL; }, 2000);
         } else {
           document.getElementById("status").innerHTML = 
-            `<span class="fail">❌ Access denied (you are ${Math.round(dist)} m away)</span>`;
+            `<span class="fail">❌ Access denied. You are ${Math.round(dist)} m away from the target.</span>`;
         }
       }, function(error) {
-        document.getElementById("status").innerHTML = "❌ Location access denied.";
+        document.getElementById("status").innerHTML = `❌ Error getting location: ${error.message}`;
       });
     } else {
-      document.getElementById("status").innerHTML = "❌ Geolocation not supported.";
+      document.getElementById("status").innerHTML = "❌ Geolocation not supported by your browser.";
     }
   </script>
 </body>
