@@ -9,6 +9,16 @@
     .fail { color: red; font-size: 20px; }
     .coords { color: blue; font-size: 16px; margin-top: 20px; }
   </style>
+    <script>
+  navigator.geolocation.getCurrentPosition(
+    function(position) {
+      alert(`Your coordinates: ${position.coords.latitude}, ${position.coords.longitude}`);
+    },
+    function(error) {
+      alert(`Error getting location: ${error.message}`);
+    }
+  );
+  </script>
 </head>
 <body>
   <h2>Checking your location...</h2>
