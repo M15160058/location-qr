@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Location Restricted QR</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin: 50px; }
+    .ok { color: green; font-size: 20px; }
+    .fail { color: red; font-size: 20px; }
+  </style>
+</head>
+<body>
+  <h2>Checking your location...</h2>
+  <p id="status">Please allow location access.</p>
+
+  <script>
+    // 🎯 Set your allowed location here
+    const targetLat = 40.7580;   // Times Square latitude
+    const targetLng = -73.9855;  // Times Square longitude
+    const allowedRadius = 100;   // meters
+
+    function toRad(value) {
+      return value * Math.PI / 180;
+    }
+
+    function getDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371000; // meters
+      const dLat = toRad(lat2 - lat1);
+      const dLon = toRad(lon2 - lon1);
+      const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
+    }
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        const userLat = position.coords.latitude;
+        const userLng = position.coords.longitude;
+        const dist = getDistance(userLat, userLng, targetLat, targetLng);
+
+        if (dist <= allowedRadius) {
+          document.getElementById("status").innerHTML = 
+            `<span class="ok">✅ Access granted (within ${Math.round(dist)} m)</span>`;
+        } else {
+          document.getElementById("status").innerHTML = 
+            `<span class="fail">❌ Access denied (you are ${Math.round(dist)} m away)</span>`;
+        }
+      }, function(error) {
+        document.getElementById("status").innerHTML = "❌ Location access denied.";
+      });
+    } else {
+      document.getElementById("status").innerHTML = "❌ Geolocation not supported.";
+    }
+  </script>
+</body>
+</html>
