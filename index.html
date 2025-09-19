@@ -16,6 +16,19 @@
   <p id="coords" class="coords"></p>
 
   <script>
+    // Simple test to see if geolocation works
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      function(position) {
+        alert(`Your coordinates: ${position.coords.latitude}, ${position.coords.longitude}`);
+      },
+      function(error) {
+        alert(`Error getting location: ${error.message}`);
+      }
+    );
+  } else {
+    alert("Geolocation not supported by your browser.");
+  }
     // 🎯 Set your allowed location here
     // Example: Swift Hall, University of Cincinnati
     const targetLat = 39.132473;
