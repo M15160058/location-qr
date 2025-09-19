@@ -9,69 +9,50 @@
         .fail { color: red; font-size: 20px; }
         .coords { color: blue; font-size: 16px; margin-top: 20px; }
     </style>
-    
     <script>
-        // Target location: Old Chemistry Building, University of Cincinnati
-        const targetLat = 39.132473;
-        const targetLng = -84.5170492;
-        const allowedRadius = 100; // meters
-        const formURL = "https://forms.office.com/Pages/ResponseDetailPage.aspx?id=bC4i9cZf60iPA3PbGCA7Y3zURXDN2c1Mk8io1jX0SGNUQjNURzRWRjNHQTlHOVlTMjZTSTBXVlZYMy4u&rid=1&GetResponseToken=MEHauwlpPSlbD8Zivgzk26RDEUhsHk15fpGrl17RNno&origin=rc";
+    // Target location: Swift Hall, University of Cincinnati
+    const targetLat = 39.132473;
+    const targetLng = -84.5170492;
+    const allowedRadius = 100; // meters
+    const formURL = "https://forms.office.com/Pages/ResponseDetailPage.aspx?id=bC4i9cZf60iPA3PbGCA7Y3zURXDN2c1Mk8io1jX0SGNUQjNURzRWRjNHQTlHOVlTMjZTSTBXVlZYMy4u&rid=1&GetResponseToken=MEHauwlpPSlbD8Zivgzk26RDEUhsHk15fpGrl17RNno&origin=rc";
 
-        // Convert degrees to radians
-        function toRad(value) { return value * Math.PI / 180; }
+    function toRad(value) { return value * Math.PI / 180; }
 
-        // Haversine formula to calculate distance in meters
-        function getDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371000; // meters
-            const dLat = toRad(lat2 - lat1);
-            const dLon = toRad(lon2 - lon1);
-            const a = Math.sin(dLat / 2)**2 +
-                      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-                      Math.sin(dLon / 2)**2;
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            return R * c;
+    function getDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371000; // meters
+      const dLat = toRad(lat2 - lat1);
+      const dLon = toRad(lon2 - lon1);
+      const a = Math.sin(dLat / 2) ** 2 +
+                Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                Math.sin(dLon / 2) ** 2;
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
+    }
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        const userLat = position.coords.latitude;
+        const userLng = position.coords.longitude;
+
+        // Show coordinates for debugging
+        document.getElementById("coords").innerText = 
+          `Your coordinates: ${userLat.toFixed(6)}, ${userLng.toFixed(6)}`;
+
+        const dist = getDistance(userLat, userLng, targetLat, targetLng);
+
+        if (dist <= allowedRadius) {
+          document.getElementById("status").innerHTML = `<span class="ok">✅ Location verified. Redirecting...</span>`;
+          setTimeout(() => { window.location.href = formURL; }, 2000);
+        } else {
+          document.getElementById("status").innerHTML = `<span class="fail">❌ Access denied. You are ${Math.round(dist)} m away from the target.</span>`;
         }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const statusElement = document.getElementById("status");
-            const coordsElement = document.getElementById("coords");
-
-            // Check if the device has a coarse pointer (i.e., is a touch screen device)
-            if (window.matchMedia('(any-pointer: coarse)').matches) {
-                // Mobile device detected, proceed with geolocation check
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(function(position) {
-                        const userLat = position.coords.latitude;
-                        const userLng = position.coords.longitude;
-
-                        coordsElement.innerText =
-                            `Your coordinates: ${userLat.toFixed(6)}, ${userLng.toFixed(6)}`;
-
-                        const dist = getDistance(userLat, userLng, targetLat, targetLng);
-
-                        if (dist <= allowedRadius) {
-                            statusElement.innerHTML =
-                                `<span class="ok">✅ Location verified. Redirecting...</span>`;
-                            setTimeout(() => { window.location.href = formURL; }, 2000);
-                        } else {
-                            statusElement.innerHTML =
-                                `<span class="fail">❌ Access denied. You are ${Math.round(dist)} m away from the seminar room. You must be present in the room for attendance!</span>`;
-                        }
-                    }, function(error) {
-                        statusElement.innerHTML =
-                            `❌ Error getting location: ${error.message}`;
-                    });
-                } else {
-                    statusElement.innerHTML =
-                        "❌ Geolocation not supported by your browser.";
-                }
-            } else {
-                // Not a mobile device (likely a desktop with a mouse)
-                statusElement.innerHTML =
-                    "❌ This form is only accessible on mobile devices.";
-            }
-        });
-    </script>
+      }, function(error) {
+        document.getElementById("status").innerHTML = `❌ Error getting location: ${error.message}`;
+      });
+    } else {
+      document.getElementById("status").innerHTML = "❌ Geolocation not supported by your browser.";
+    }
+  </script>
 </head>
 <body>
     <h2>Checking your location...</h2>
