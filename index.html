@@ -36,39 +36,46 @@
             const statusElement = document.getElementById("status");
             const coordsElement = document.getElementById("coords");
 
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    const userLat = position.coords.latitude;
-                    const userLng = position.coords.longitude;
+            // Check if the device has a coarse pointer (i.e., is a touch screen device)
+            if (window.matchMedia('(any-pointer: coarse)').matches) {
+                // Mobile device detected, proceed with geolocation check
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        const userLat = position.coords.latitude;
+                        const userLng = position.coords.longitude;
 
-                    // Show coordinates for debugging
-                    coordsElement.innerText =
-                        `Your coordinates: ${userLat.toFixed(6)}, ${userLng.toFixed(6)}`;
+                        coordsElement.innerText =
+                            `Your coordinates: ${userLat.toFixed(6)}, ${userLng.toFixed(6)}`;
 
-                    const dist = getDistance(userLat, userLng, targetLat, targetLng);
+                        const dist = getDistance(userLat, userLng, targetLat, targetLng);
 
-                    if (dist <= allowedRadius) {
+                        if (dist <= allowedRadius) {
+                            statusElement.innerHTML =
+                                `<span class="ok">✅ Location verified. Redirecting...</span>`;
+                            setTimeout(() => { window.location.href = formURL; }, 2000);
+                        } else {
+                            statusElement.innerHTML =
+                                `<span class="fail">❌ Access denied. You are ${Math.round(dist)} m away from the seminar room. You must be present in the room for attendance!</span>`;
+                        }
+                    }, function(error) {
                         statusElement.innerHTML =
-                            `<span class="ok">✅ Location verified. Redirecting...</span>`;
-                        setTimeout(() => { window.location.href = formURL; }, 2000);
-                    } else {
-                        statusElement.innerHTML =
-                            `<span class="fail">❌ Access denied. You are ${Math.round(dist)} m away from the seminar room. You must be present in the room for attendance!</span>`;
-                    }
-                }, function(error) {
+                            `❌ Error getting location: ${error.message}`;
+                    });
+                } else {
                     statusElement.innerHTML =
-                        `❌ Error getting location: ${error.message}`;
-                });
+                        "❌ Geolocation not supported by your browser.";
+                }
             } else {
+                // Not a mobile device (likely a desktop with a mouse)
                 statusElement.innerHTML =
-                    "❌ Geolocation not supported by your browser.";
+                    "❌ This form is only accessible on mobile devices.";
             }
         });
     </script>
 </head>
 <body>
     <h2>Checking your location...</h2>
-    <p id="status">Verifying location...</p>
+    <p id="status">Verifying device type...</p>
     <p id="coords" class="coords"></p>
 </body>
 </html>
