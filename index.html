@@ -10,19 +10,16 @@
     .coords { color: blue; font-size: 16px; margin-top: 20px; }
   </style>
      <script>
-    // Simple test to see if geolocation works
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      function(position) {
-        alert(`Your coordinates: ${position.coords.latitude}, ${position.coords.longitude}`);
-      },
-      function(error) {
-        alert(`Error getting location: ${error.message}`);
-      }
-    );
+       // Check if user is on mobile
+  if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      // Mobile user → allow access
+      console.log("Mobile device detected. Access granted.");
   } else {
-    alert("Geolocation not supported by your browser.");
+      // Not mobile → redirect or block
+      alert("This form is only accessible on mobile devices.");
+      window.location.href = "error.html"; // Optional redirect
   }
+    
     // 🎯 Set your allowed location here
     const targetLat = 40.7580;
     const targetLng = -73.9855;
@@ -71,7 +68,7 @@
           setTimeout(() => { window.location.href = formURL; }, 2000);
         } else {
           document.getElementById("status").innerHTML = 
-            `<span class="fail">❌ Access denied. You are ${Math.round(dist)} m away from the target.</span>`;
+            `<span class="fail">❌ Access denied. You are ${Math.round(dist)} m away from the seminar room.You have to be present in the room for your attendance! Thank you!</span>`;
         }
       }, function(error) {
         document.getElementById("status").innerHTML = `❌ Error getting location: ${error.message}`;
