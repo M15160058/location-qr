@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Location Restricted QR</title>
+  <title>Location Restricted Form Access</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body { font-family: Arial, sans-serif; text-align: center; margin: 50px; }
@@ -14,10 +14,13 @@
   <p id="status">Please allow location access.</p>
 
   <script>
-    // 🎯 Set your allowed location here
-    const targetLat = 39.132645;   // Times Square latitude
-    const targetLng = −84.517355;  // Times Square longitude
-    const allowedRadius = 100;   // meters
+    // 🎯 Allowed location (example: Times Square, NYC)
+    const targetLat = 39.132645;
+    const targetLng = −84.51735;
+    const allowedRadius = 100; // meters
+
+    // 🌐 Your Outlook Form link
+    const formURL = "https://forms.office.com/Pages/ResponsePage.aspx?id=YOUR_FORM_URL_HERE";
 
     function toRad(value) {
       return value * Math.PI / 180;
@@ -42,7 +45,8 @@
 
         if (dist <= allowedRadius) {
           document.getElementById("status").innerHTML = 
-            `<span class="ok">✅ Access granted (within ${Math.round(dist)} m)</span>`;
+            `<span class="ok">✅ Location verified. Redirecting...</span>`;
+          setTimeout(() => { window.location.href = formURL; }, 2000);
         } else {
           document.getElementById("status").innerHTML = 
             `<span class="fail">❌ Access denied (you are ${Math.round(dist)} m away)</span>`;
