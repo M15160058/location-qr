@@ -61,6 +61,15 @@ document.addEventListener('contextmenu', function(e) {
     e.preventDefault();
     alert("Right-click is disabled on this page.");
 });
+        // Optional: disable some keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+    // F12
+    if(e.key === "F12") e.preventDefault();
+    // Ctrl+Shift+I (DevTools)
+    if(e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "i") e.preventDefault();
+    // Ctrl+U (View Source)
+    if(e.ctrlKey && e.key.toLowerCase() === "u") e.preventDefault();
+});
 
   </script>
 </head>
