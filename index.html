@@ -55,6 +55,13 @@ document.getElementById("distance").innerText =
     } else {
       document.getElementById("status").innerHTML = "❌ Geolocation not supported by your browser.";
     }
+
+    // Disable right-click context menu
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    alert("Right-click is disabled on this page.");
+});
+
   </script>
 </head>
 <body>
